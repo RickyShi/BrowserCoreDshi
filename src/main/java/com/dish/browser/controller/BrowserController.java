@@ -10,7 +10,6 @@ import android.os.Message;
 import android.view.View;
 import android.webkit.ValueCallback;
 import android.webkit.WebChromeClient.CustomViewCallback;
-import android.webkit.WebView;
 
 public interface BrowserController {
 
@@ -45,8 +44,6 @@ public interface BrowserController {
 	void toggleActionBar();
 
 	void longClickPage(String url);
-
-	void openBookmarkPage(WebView view);
 
 	void showFileChooser(ValueCallback<Uri[]> filePathCallback);
 

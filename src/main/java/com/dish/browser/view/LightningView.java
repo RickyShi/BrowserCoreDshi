@@ -45,13 +45,6 @@ import android.webkit.WebViewClient;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.net.URISyntaxException;
-
 import com.dish.browser.R;
 import com.dish.browser.constant.Constants;
 import com.dish.browser.constant.StartPage;
@@ -61,6 +54,13 @@ import com.dish.browser.preference.PreferenceManager;
 import com.dish.browser.utils.AdBlock;
 import com.dish.browser.utils.IntentUtils;
 import com.dish.browser.utils.Utils;
+
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.net.URISyntaxException;
 
 public class LightningView {
 
@@ -142,8 +142,6 @@ public class LightningView {
 		} else {
 			if (mHomepage.startsWith("about:home")) {
 				mWebView.loadUrl(getHomepage());
-			} else if (mHomepage.startsWith("about:bookmarks")) {
-				mBrowserController.openBookmarkPage(mWebView);
 			} else {
 				mWebView.loadUrl(mHomepage);
 			}

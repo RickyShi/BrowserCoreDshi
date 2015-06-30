@@ -29,6 +29,7 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.media.MediaPlayer;
 import android.net.Uri;
+import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -90,11 +91,8 @@ import android.widget.Toast;
 import android.widget.VideoView;
 
 import com.dish.browser.R;
-import com.dish.browser.constant.BookmarkPage;
 import com.dish.browser.constant.Constants;
-import com.dish.browser.constant.HistoryPage;
 import com.dish.browser.controller.BrowserController;
-import com.dish.browser.database.BookmarkManager;
 import com.dish.browser.database.HistoryDatabase;
 import com.dish.browser.database.HistoryItem;
 import com.dish.browser.object.ClickHandler;
@@ -108,15 +106,17 @@ import com.dish.browser.view.LightningView;
 import net.i2p.android.ui.I2PAndroidHelper;
 
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.net.URL;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.Comparator;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Locale;
 
@@ -129,17 +129,12 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 	private DrawerLayout mDrawerLayout;
 	private FrameLayout mBrowserFrame;
 	private FullscreenHolder mFullscreenContainer;
-//	private ListView mDrawerListLeft, mDrawerListRight;
-//	private LinearLayout mDrawerLeft, mDrawerRight, mUiLayout, mToolbarLayout;
-
-	//ricky
 	private ListView mDrawerListLeft;
 	private LinearLayout mDrawerLeft, mUiLayout, mToolbarLayout;
 	private RelativeLayout mSearchBar;
 
 	// List
 	private final List<LightningView> mWebViews = new ArrayList<>();
-	private List<HistoryItem> mBookmarkList;
 	private LightningView mCurrentView;
 
 	private AnimatedProgressBar mProgressBar;
@@ -149,8 +144,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 	private View mCustomView, mVideoProgressView;
 
 	// Adapter
-//	ricky
-//	private BookmarkViewAdapter mBookmarkAdapter;
 	private LightningViewAdapter mTitleAdapter;
 	private SearchAdapter mSearchAdapter;
 
@@ -171,7 +164,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 
 	// Storage
 	private HistoryDatabase mHistoryDatabase;
-	private BookmarkManager mBookmarkManager;
 	private PreferenceManager mPreferences;
 
 	// Image
@@ -226,13 +218,7 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 		mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 		mDrawerListLeft = (ListView) findViewById(R.id.left_drawer_list);
 
-//		ricky
-//		mDrawerRight = (LinearLayout) findViewById(R.id.right_drawer);
-//		mDrawerRight.setLayerType(View.LAYER_TYPE_HARDWARE, null);
-//		mDrawerListRight = (ListView) findViewById(R.id.right_drawer_list);
-
 		setNavigationDrawerWidth();
-//		mDrawerLayout.setDrawerListener(new DrawerLocker());
 
 		mWebpageBitmap = Utils.getWebpageBitmap(getResources(), mDarkTheme);
 
@@ -242,10 +228,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 		mDrawerListLeft.setAdapter(mTitleAdapter);
 		mDrawerListLeft.setOnItemClickListener(new DrawerItemClickListener());
 		mDrawerListLeft.setOnItemLongClickListener(new DrawerItemLongClickListener());
-
-//		ricky
-//		mDrawerListRight.setOnItemClickListener(new BookmarkItemClickListener());
-//		mDrawerListRight.setOnItemLongClickListener(new BookmarkItemLongClickListener());
 
 		mHistoryDatabase = HistoryDatabase.getInstance(getApplicationContext());
 
@@ -305,31 +287,15 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 		mSearch.setOnTouchListener(search.new TouchListener());
 
 		mSystemBrowser = getSystemBrowser();
-		//ricky
-		/*Thread initialize = new Thread(new Runnable() {
+		Thread initialize = new Thread(new Runnable() {
 
 			@Override
 			public void run() {
-				mBookmarkManager = BookmarkManager.getInstance(mActivity.getApplicationContext());
-				mBookmarkList = mBookmarkManager.getBookmarks(true);
-				if (mBookmarkList.size() == 0 && mPreferences.getDefaultBookmarks()) {
-					for (String[] array : BookmarkManager.DEFAULT_BOOKMARKS) {
-						HistoryItem bookmark = new HistoryItem(array[0], array[1]);
-						if (mBookmarkManager.addBookmark(bookmark)) {
-							mBookmarkList.add(bookmark);
-						}
-					}
-					Collections.sort(mBookmarkList, new SortIgnoreCase());
-					mPreferences.setDefaultBookmarks(false);
-				}
-				mBookmarkAdapter = new BookmarkViewAdapter(mActivity, R.layout.bookmark_list_item,
-						mBookmarkList);
-				mDrawerListRight.setAdapter(mBookmarkAdapter);
 				initializeSearchSuggestions(mSearch);
 			}
 
 		});
-		initialize.run();*/
+		initialize.run();
 
 		newTab.setOnClickListener(this);
 		newTab.setOnLongClickListener(new View.OnLongClickListener() {
@@ -514,37 +480,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 		}
 	}
 
-//	ricky
-//	private class DrawerLocker implements DrawerListener {
-//
-//		@Override
-//		public void onDrawerClosed(View v) {
-//			if (v == mDrawerRight) {
-//				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerLeft);
-//			} else {
-//				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED, mDrawerRight);
-//			}
-//		}
-//
-//		@Override
-//		public void onDrawerOpened(View v) {
-//			if (v == mDrawerRight) {
-//				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mDrawerLeft);
-//			} else {
-//				mDrawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED, mDrawerRight);
-//			}
-//		}
-//
-//		@Override
-//		public void onDrawerSlide(View v, float arg) {
-//		}
-//
-//		@Override
-//		public void onDrawerStateChanged(int arg) {
-//		}
-//
-//	}
-
 	/*
 	 * If Orbot/Tor or I2P is installed, prompt the user if they want to enable
 	 * proxying for this session
@@ -686,24 +621,12 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			params.width = maxWidth;
 			mDrawerLeft.setLayoutParams(params);
 			mDrawerLeft.requestLayout();
-//			ricky
-			/*DrawerLayout.LayoutParams paramsRight = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerRight
-					.getLayoutParams();
-			paramsRight.width = maxWidth;
-			mDrawerRight.setLayoutParams(paramsRight);
-			mDrawerRight.requestLayout();*/
 		} else {
 			DrawerLayout.LayoutParams params = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerLeft
 					.getLayoutParams();
 			params.width = width;
 			mDrawerLeft.setLayoutParams(params);
 			mDrawerLeft.requestLayout();
-//			ricky
-			/*DrawerLayout.LayoutParams paramsRight = (android.support.v4.widget.DrawerLayout.LayoutParams) mDrawerRight
-					.getLayoutParams();
-			paramsRight.width = width;
-			mDrawerRight.setLayoutParams(paramsRight);
-			mDrawerRight.requestLayout();*/
 		}
 	}
 
@@ -1061,120 +984,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			return true;
 		}
 	}
-
-	private class BookmarkItemClickListener implements ListView.OnItemClickListener {
-
-		@Override
-		public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-			if (mCurrentView != null) {
-				mCurrentView.loadUrl(mBookmarkList.get(position).getUrl());
-			}
-//			ricky
-			/*// keep any jank from happening when the drawer is closed after the
-			// URL starts to load
-			final Handler handler = new Handler();
-			handler.postDelayed(new Runnable() {
-				@Override
-				public void run() {
-					mDrawerLayout.closeDrawer(mDrawerRight);
-				}
-			}, 150);*/
-		}
-	}
-
-	//ricky
-/*
-	private class BookmarkItemLongClickListener implements ListView.OnItemLongClickListener {
-
-		@Override
-		public boolean onItemLongClick(AdapterView<?> arg0, View arg1, final int position, long arg3) {
-
-			AlertDialog.Builder builder = new AlertDialog.Builder(mActivity);
-			builder.setTitle(mActivity.getResources().getString(R.string.action_bookmarks));
-			builder.setMessage(getResources().getString(R.string.dialog_bookmark))
-					.setCancelable(true)
-					.setPositiveButton(getResources().getString(R.string.action_new_tab),
-							new DialogInterface.OnClickListener() {
-								@Override
-								public void onClick(DialogInterface dialog, int id) {
-									newTab(mBookmarkList.get(position).getUrl(), false);
-									mDrawerLayout.closeDrawers();
-								}
-							})
-					.setNegativeButton(getResources().getString(R.string.action_delete),
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									if (mBookmarkManager.deleteBookmark(mBookmarkList.get(position)
-											.getUrl())) {
-										mBookmarkList.remove(position);
-										notifyBookmarkDataSetChanged();
-										mSearchAdapter.refreshBookmarks();
-										openBookmarks();
-									}
-								}
-							})
-					.setNeutralButton(getResources().getString(R.string.action_edit),
-							new DialogInterface.OnClickListener() {
-
-								@Override
-								public void onClick(DialogInterface dialog, int which) {
-									editBookmark(position);
-								}
-							});
-			AlertDialog alert = builder.create();
-			alert.show();
-			return true;
-		}
-	}
-
-	*/
-/**
-	 * Takes in the id of which bookmark was selected and shows a dialog that
-	 * allows the user to rename and change the url of the bookmark
-	 *
-	 * @param id
-	 *            which id in the list was chosen
-	 *//*
-
-	public synchronized void editBookmark(final int id) {
-		final AlertDialog.Builder homePicker = new AlertDialog.Builder(mActivity);
-		homePicker.setTitle(getResources().getString(R.string.title_edit_bookmark));
-		final EditText getTitle = new EditText(mActivity);
-		getTitle.setHint(getResources().getString(R.string.hint_title));
-		getTitle.setText(mBookmarkList.get(id).getTitle());
-		getTitle.setSingleLine();
-		final EditText getUrl = new EditText(mActivity);
-		getUrl.setHint(getResources().getString(R.string.hint_url));
-		getUrl.setText(mBookmarkList.get(id).getUrl());
-		getUrl.setSingleLine();
-		LinearLayout layout = new LinearLayout(mActivity);
-		layout.setOrientation(LinearLayout.VERTICAL);
-		layout.addView(getTitle);
-		layout.addView(getUrl);
-		homePicker.setView(layout);
-		homePicker.setPositiveButton(getResources().getString(R.string.action_ok),
-				new DialogInterface.OnClickListener() {
-
-					@Override
-					public void onClick(DialogInterface dialog, int which) {
-						mBookmarkList.get(id).setTitle(getTitle.getText().toString());
-						mBookmarkList.get(id).setUrl(getUrl.getText().toString());
-						mBookmarkManager.overwriteBookmarks(mBookmarkList);
-						Collections.sort(mBookmarkList, new SortIgnoreCase());
-						notifyBookmarkDataSetChanged();
-						if (mCurrentView != null) {
-							if (mCurrentView.getUrl().startsWith(Constants.FILE)
-									&& mCurrentView.getUrl().endsWith("bookmarks.html")) {
-								openBookmarkPage(mCurrentView.getWebView());
-							}
-						}
-					}
-				});
-		homePicker.show();
-	}
-*/
 
 	/**
 	 * displays the WebView contained in the LightningView Also handles the
@@ -1766,55 +1575,8 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 
 		return 0xff << ALPHA_CHANNEL | r << RED_CHANNEL | g << GREEN_CHANNEL | b;
 	}
-	//ricky
-	/*public class BookmarkViewAdapter extends ArrayAdapter<HistoryItem> {
 
-		final Context context;
-		List<HistoryItem> data = null;
-		final int layoutResourceId;
-
-		public BookmarkViewAdapter(Context context, int layoutResourceId, List<HistoryItem> data) {
-			super(context, layoutResourceId, data);
-			this.layoutResourceId = layoutResourceId;
-			this.context = context;
-			this.data = data;
-		}
-
-		@Override
-		public View getView(int position, View convertView, ViewGroup parent) {
-			View row = convertView;
-			BookmarkViewHolder holder;
-
-			if (row == null) {
-				LayoutInflater inflater = ((Activity) context).getLayoutInflater();
-				row = inflater.inflate(layoutResourceId, parent, false);
-
-				holder = new BookmarkViewHolder();
-				holder.txtTitle = (TextView) row.findViewById(R.id.textBookmark);
-				holder.favicon = (ImageView) row.findViewById(R.id.faviconBookmark);
-				row.setTag(holder);
-			} else {
-				holder = (BookmarkViewHolder) row.getTag();
-			}
-
-			HistoryItem web = data.get(position);
-			holder.txtTitle.setText(web.getTitle());
-			holder.favicon.setImageBitmap(mWebpageBitmap);
-			if (web.getBitmap() == null) {
-				getImage(holder.favicon, web);
-			} else {
-				holder.favicon.setImageBitmap(web.getBitmap());
-			}
-			return row;
-		}
-
-		class BookmarkViewHolder {
-			TextView txtTitle;
-			ImageView favicon;
-		}
-	}*/
-//ricky
-	/*private void getImage(ImageView image, HistoryItem web) {
+	private void getImage(ImageView image, HistoryItem web) {
 		new DownloadImageTask(image, web).execute(web.getUrl());
 	}
 
@@ -1906,11 +1668,8 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			Bitmap fav = Utils.padFavicon(result);
 			bmImage.setImageBitmap(fav);
 			mWeb.setBitmap(fav);
-			//ricky
-//			notifyBookmarkDataSetChanged();
 		}
 	}
-*/
 	static String getDomainName(String url) throws URISyntaxException {
 		URI uri = new URI(url);
 		String domain = uri.getHost();
@@ -2070,22 +1829,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 		return false;
 	}
 
-	/**
-	 * function that opens the HTML history page in the browser
-	 */
-	private void openHistory() {
-		// use a thread so that history retrieval doesn't block the UI
-		Thread history = new Thread(new Runnable() {
-
-			@Override
-			public void run() {
-				mCurrentView.loadUrl(HistoryPage.getHistoryPage(mActivity));
-				mSearch.setText("");
-			}
-
-		});
-		history.run();
-	}
 //ricky
 /*	*//**
 	 * helper function that opens the bookmark drawer
@@ -2099,38 +1842,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 
 	public void closeDrawers() {
 		mDrawerLayout.closeDrawers();
-	}
-
-	@Override
-	/**
-	 * open the HTML bookmarks page, parameter view is the WebView that should show the page
-	 */
-	public void openBookmarkPage(WebView view) {
-		StringBuilder bookmarkBuilder = new StringBuilder();
-		bookmarkBuilder.append(BookmarkPage.HEADING);
-		Iterator<HistoryItem> iter = mBookmarkList.iterator();
-		HistoryItem helper;
-		while (iter.hasNext()) {
-			helper = iter.next();
-			bookmarkBuilder.append(BookmarkPage.PART1);
-			bookmarkBuilder.append(helper.getUrl());
-			bookmarkBuilder.append(BookmarkPage.PART2);
-			bookmarkBuilder.append(helper.getUrl());
-			bookmarkBuilder.append(BookmarkPage.PART3);
-			bookmarkBuilder.append(helper.getTitle());
-			bookmarkBuilder.append(BookmarkPage.PART4);
-		}
-		bookmarkBuilder.append(BookmarkPage.END);
-		File bookmarkWebPage = new File(mActivity.getFilesDir(), BookmarkPage.FILENAME);
-		try {
-			FileWriter bookWriter = new FileWriter(bookmarkWebPage, false);
-			bookWriter.write(bookmarkBuilder.toString());
-			bookWriter.close();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		view.loadUrl(Constants.FILE + bookmarkWebPage);
 	}
 
 	@Override

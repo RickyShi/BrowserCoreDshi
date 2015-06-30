@@ -97,67 +97,12 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="com.dish.browser.activity.SettingsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/settings"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dish.browser.activity.GeneralSettingsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/settings_general"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.GENERAL_SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dish.browser.activity.DisplaySettingsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/settings_display"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.DISPLAY_SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
             android:name="com.dish.browser.activity.PrivacySettingsActivity"
             android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
             android:label="@string/settings_privacy"
             android:theme="@style/Theme.SettingsTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.PRIVACY_SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dish.browser.activity.AdvancedSettingsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/settings_advanced"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.ADVANCED_SETTINGS" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dish.browser.activity.AboutSettingsActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/settings_about"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.ABOUT_SETTINGS" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
@@ -183,17 +128,6 @@
             android:theme="@style/Theme.SettingsTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.LICENSE" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name="com.dish.browser.activity.BookmarkActivity"
-            android:configChanges="orientation|screenSize|keyboardHidden|keyboard"
-            android:label="@string/bookmark_settings"
-            android:theme="@style/Theme.SettingsTheme" >
-            <intent-filter>
-                <action android:name="android.intent.action.BOOKMARK" />
 
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
