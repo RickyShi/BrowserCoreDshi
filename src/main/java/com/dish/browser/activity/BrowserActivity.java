@@ -818,27 +818,11 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			case R.id.action_find:
 				findInPage();
 				return true;
-			/*case R.id.action_reading_mode:
-				Intent read = new Intent(this, ReadingActivity.class);
-				read.putExtra(Constants.LOAD_READING_URL, mCurrentView.getUrl());
-				startActivity(read);
-				return true;*/
 			default:
 				return super.onOptionsItemSelected(item);
 		}
 	}
 
-	/**
-	 * refreshes the underlying list of the Bookmark adapter since the bookmark
-	 * adapter doesn't always change when notifyDataChanged gets called.
-	 */
-	//ricky
-	/*private void notifyBookmarkDataSetChanged() {
-		mBookmarkAdapter.clear();
-		mBookmarkAdapter.addAll(mBookmarkList);
-		mBookmarkAdapter.notifyDataSetChanged();
-	}
-*/
 	/**
 	 * method that shows a dialog asking what string the user wishes to search
 	 * for. It highlights the text entered.
@@ -1207,10 +1191,7 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 	public void onBackPressed() {
 		if (mDrawerLayout.isDrawerOpen(mDrawerLeft)) {
 			mDrawerLayout.closeDrawer(mDrawerLeft);
-		} //ricky
-		 /*else if (mDrawerLayout.isDrawerOpen(mDrawerRight)) {
-			mDrawerLayout.closeDrawer(mDrawerRight);
-		}*/ else {
+		} else {
 			if (mCurrentView != null) {
 				Log.d(Constants.TAG, "onBackPressed");
 				if (mSearch.hasFocus()) {
@@ -1298,9 +1279,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			mCurrentView.onResume();
 
 			mHistoryDatabase = HistoryDatabase.getInstance(getApplicationContext());
-//			ricky
-//			mBookmarkList = mBookmarkManager.getBookmarks(true);
-//			notifyBookmarkDataSetChanged();
 		}
 		initializePreferences();
 		if (mWebViews != null) {
@@ -1774,17 +1752,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 	public boolean isIncognito() {
 		return false;
 	}
-
-//ricky
-/*	*//**
-	 * helper function that opens the bookmark drawer
-	 *//*
-	private void openBookmarks() {
-		if (mDrawerLayout.isDrawerOpen(mDrawerLeft)) {
-			mDrawerLayout.closeDrawers();
-		}
-		mDrawerLayout.openDrawer(mDrawerRight);
-	}*/
 
 	public void closeDrawers() {
 		mDrawerLayout.closeDrawers();
