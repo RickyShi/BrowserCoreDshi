@@ -798,12 +798,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 	public boolean onOptionsItemSelected(MenuItem item) {
 		// Handle action buttons
 		switch (item.getItemId()) {
-			//ricky
-			/*case android.R.id.home:
-				if (mDrawerLayout.isDrawerOpen(mDrawerRight)) {
-					mDrawerLayout.closeDrawer(mDrawerRight);
-				}
-				return true;*/
 			case R.id.action_back:
 				if (mCurrentView != null) {
 					if (mCurrentView.canGoBack()) {
@@ -821,54 +815,6 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			case R.id.action_new_tab:
 				newTab(null, true);
 				return true;
-			/*case R.id.action_incognito:
-				startActivity(new Intent(this, IncognitoActivity.class));
-				return true;
-			case R.id.action_share:
-				if (!mCurrentView.getUrl().startsWith(Constants.FILE)) {
-					Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
-					shareIntent.setType("text/plain");
-					shareIntent.putExtra(android.content.Intent.EXTRA_SUBJECT,
-							mCurrentView.getTitle());
-					String shareMessage = mCurrentView.getUrl();
-					shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareMessage);
-					startActivity(Intent.createChooser(shareIntent,
-							getResources().getString(R.string.dialog_title_share)));
-				}
-				return true;
-			//ricky
-			*//*case R.id.action_bookmarks:
-				openBookmarks();
-				return true;*//*
-			case R.id.action_copy:
-				if (mCurrentView != null) {
-					if (!mCurrentView.getUrl().startsWith(Constants.FILE)) {
-						ClipboardManager clipboard = (ClipboardManager) getSystemService(CLIPBOARD_SERVICE);
-						ClipData clip = ClipData.newPlainText("label", mCurrentView.getUrl());
-						clipboard.setPrimaryClip(clip);
-						Utils.showToast(mActivity,
-								mActivity.getResources().getString(R.string.message_link_copied));
-					}
-				}
-				return true;
-			case R.id.action_settings:
-				startActivity(new Intent(this, SettingsActivity.class));
-				return true;
-			case R.id.action_history:
-				openHistory();
-				return true;
-			case R.id.action_add_bookmark:
-				if (!mCurrentView.getUrl().startsWith(Constants.FILE)) {
-					HistoryItem bookmark = new HistoryItem(mCurrentView.getUrl(),
-							mCurrentView.getTitle());
-					if (mBookmarkManager.addBookmark(bookmark)) {
-						mBookmarkList.add(bookmark);
-						Collections.sort(mBookmarkList, new SortIgnoreCase());
-						notifyBookmarkDataSetChanged();
-						mSearchAdapter.refreshBookmarks();
-					}
-				}
-				return true;*/
 			case R.id.action_find:
 				findInPage();
 				return true;
