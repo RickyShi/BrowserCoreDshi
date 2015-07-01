@@ -29,7 +29,7 @@ public class LicenseActivity extends ThemableSettingsActivity implements View.On
 		getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 		findViewById(R.id.browserLicense).setOnClickListener(this);
 		findViewById(R.id.licenseAOSP).setOnClickListener(this);
-		findViewById(R.id.licenseHosts).setOnClickListener(this);
+//		findViewById(R.id.licenseHosts).setOnClickListener(this);
 		findViewById(R.id.licenseOrbot).setOnClickListener(this);
 		findViewById(R.id.licenseSnactory).setOnClickListener(this);
 //		findViewById(R.id.licenseJsoup).setOnClickListener(this);
@@ -44,9 +44,9 @@ public class LicenseActivity extends ThemableSettingsActivity implements View.On
 			case R.id.licenseAOSP:
 				actionView("http://www.apache.org/licenses/LICENSE-2.0");
 				break;
-			case R.id.licenseHosts:
+			/*case R.id.licenseHosts:
 				actionView("http://hosts-file.net/");
-				break;
+				break;*/
 			case R.id.licenseOrbot:
 				actionView("http://www.gnu.org/licenses/lgpl.html");
 				break;

@@ -63,7 +63,7 @@
             android:textColor="@color/light" />
     </LinearLayout>
 
-    <LinearLayout
+    <!--<LinearLayout
         android:layout_width="match_parent"
         android:layout_height="1dp"
         android:layout_marginLeft="10dp"
@@ -93,7 +93,7 @@
             android:text="@string/freeware"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light" />
-    </LinearLayout>
+    </LinearLayout>-->
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -166,7 +166,7 @@
         android:layout_marginRight="10dp"
         android:background="?attr/dividerColor" />
     
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/licenseJsoup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -189,7 +189,7 @@
             android:text="@string/mit_license"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:textColor="@color/light" />
-    </LinearLayout>
+    </LinearLayout>-->
     
     <LinearLayout
         android:layout_width="match_parent"
