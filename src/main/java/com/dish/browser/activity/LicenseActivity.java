@@ -32,7 +32,7 @@ public class LicenseActivity extends ThemableSettingsActivity implements View.On
 		findViewById(R.id.licenseHosts).setOnClickListener(this);
 		findViewById(R.id.licenseOrbot).setOnClickListener(this);
 		findViewById(R.id.licenseSnactory).setOnClickListener(this);
-		findViewById(R.id.licenseJsoup).setOnClickListener(this);
+//		findViewById(R.id.licenseJsoup).setOnClickListener(this);
 	}
 
 	@Override
@@ -53,9 +53,9 @@ public class LicenseActivity extends ThemableSettingsActivity implements View.On
 			case R.id.licenseSnactory:
 				actionView("http://www.apache.org/licenses/LICENSE-2.0");
 				break;
-			case R.id.licenseJsoup:
+			/*case R.id.licenseJsoup:
 				actionView("http://jsoup.org/license");
-				break;
+				break;*/
 		}
 	}
 

@@ -818,6 +818,9 @@ public class BrowserActivity extends ThemableActivity implements BrowserControll
 			case R.id.action_find:
 				findInPage();
 				return true;
+			case R.id.about_page:
+				startActivity(new Intent(this, LicenseActivity.class));
+				return true;
 			default:
 				return super.onOptionsItemSelected(item);
 		}
